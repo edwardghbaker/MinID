@@ -223,19 +223,19 @@ class MinID():
     
 #%% TESTING
 
-# #From phMELTs
-# Ol = np.array(pd.read_excel('test.xlsx',sheet_name='Ol'))
-# Cpx = np.array(pd.read_excel('test.xlsx',sheet_name='Cpx'))
+#From phMELTs
+Ol = np.array(pd.read_excel('test.xlsx',sheet_name='Ol'))
+Cpx = np.array(pd.read_excel('test.xlsx',sheet_name='Cpx'))
 
 # pred_KNN_Ol = minID_KNN.predict(Ol)
 # pred_NN_Ol = minID_NN.predict(Ol)
 
 
 
-# #%% testing rellies work 
-# re = pd.read_excel('test.xlsx',sheet_name='rellie')
-# predre1 = minID_KNN.predict(re)
-# #predre2 = minID_LDA.predict(re)
+#%% testing rellies work 
+re = pd.read_excel('test.xlsx',sheet_name='rellie')
+predre1 = minID_KNN.predict(re)
+#predre2 = minID_LDA.predict(re)
 
 #%%
 
