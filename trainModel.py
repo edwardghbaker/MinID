@@ -18,7 +18,12 @@ totalLength = np.sum(lengths)
 # %% concatenate data and split into arrays
 
 data_full = pd.concat([data.parse(sheet) for sheet in names], ignore_index=True)
-labels = np.zeros((totalLength, 1))
+labels = np.array([])
 
-for i in range(len(names)):
-    labels[i*len(data.parse(names[i])):(i+1)*len(data.parse(names[i]))] = names[i]
+for i,j in zip(names,lengths):
+    x = np.full(j,i)
+    labels = np.append(labels,x)
+
+
+# %%
+
