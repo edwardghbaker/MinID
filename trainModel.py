@@ -1,10 +1,9 @@
 #%% import libraries
 
 import tensorflow as tf 
-from tf.data import Dataset
+from tensorflow.data import Dataset
 import numpy as np
 import scipy as scipy 
-import matplotlib as mpl 
 import pandas as pd
 
 #%% import data
@@ -25,7 +24,15 @@ for i,j in zip(names,lengths):
     x = np.full(j,i)
     labels = np.append(labels,x)
 
+'''
+Now we have all the data stacked in a single array, 'data_full', and the labels in a single array, 'labels'.
+
+'''
 
 # %% split data into training and testing
 
-Dataset(data_full,labels)
+
+
+# %%
+
+
