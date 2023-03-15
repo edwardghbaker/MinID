@@ -1,6 +1,7 @@
 #%% import libraries
 
 import tensorflow as tf 
+from tf.data import Dataset
 import numpy as np
 import scipy as scipy 
 import matplotlib as mpl 
@@ -25,5 +26,6 @@ for i,j in zip(names,lengths):
     labels = np.append(labels,x)
 
 
-# %%
+# %% split data into training and testing
 
+Dataset(data_full,labels)
