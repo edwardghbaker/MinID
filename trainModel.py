@@ -40,6 +40,28 @@ normalized_data = layer(data_full)
 
 X_train, X_test, y_train, y_test = train_test_split(data_full, labels, test_size=0.2)
 
-# %%
+train_dataset = tf.data.Dataset.from_tensor_slices((X_train, y_train))
+test_dataset = tf.data.Dataset.from_tensor_slices((X_test, y_test))
+
+# %% create model
 
 
+model = keras.Sequential(
+    [
+        layers.Dense(64, activation="relu", name="layer1"),
+        layers.Dense(64, activation="relu", name="layer2"),
+        layers.Dense(64),
+    ]
+)
+
+
+# %% compile model
+model.compile(
+    optimizer=keras.optimizers.RMSprop(learning_rate=1e-3),
+    loss=keras.losses.SparseCategoricalCrossentropy(),
+    metrics=[keras.metrics.SparseCategoricalAccuracy()],
+)
+
+history = model.fit(train_dataset, epochs=10, batch_size=32, verbose=2)
+
+#%% evaluate model
