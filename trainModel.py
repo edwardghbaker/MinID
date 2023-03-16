@@ -58,22 +58,22 @@ model = keras.Sequential(
         layers.Dense(256, activation="relu", name="layer1"),
         layers.Dense(256, activation="relu", name="layer2"),
         layers.Dense(128, activation="relu", name="layer3"),
-        layers.Dense(59, activation = 'softmax', name="output")
+        layers.Dense(59)
     ]
 )
 
 
 # %% compile model
+
+batch_size = 64
+epochs = 10
 model.compile(
-    loss = 'categorical_crossentropy'
-    , optimizer = 'adam'
-    , metrics = ['accuracy']
-    )
+    loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True)
+    , optimizer=tf.keras.optimizers.Adam(learning_rate=0.001)
+    , metrics=["accuracy"])
 
+model.fit(X_train, y_train, batch_size=batch_size, epochs=epochs, validation_split=0.1)
 
-#%% train model
-
-history = model.fit(X_train, y_train, epochs=10, batch_size=32, verbose=2)
 
 #%% evaluate model
 
