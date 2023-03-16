@@ -1,7 +1,10 @@
 #%% import libraries
 
 import tensorflow as tf 
-from tensorflow.data import Dataset
+from tensorflow.keras import layers
+from tensorflow import keras
+from sklearn.model_selection import train_test_split
+
 import numpy as np
 import scipy as scipy 
 import pandas as pd
@@ -29,9 +32,13 @@ Now we have all the data stacked in a single array, 'data_full', and the labels 
 
 '''
 
-# %% split data into training and testing
+# %% preprocess then split data into training and testing
 
+layer = layers.Normalization()
+layer.adapt(data_full)
+normalized_data = layer(data_full)
 
+X_train, X_test, y_train, y_test = train_test_split(data_full, labels, test_size=0.2)
 
 # %%
 
