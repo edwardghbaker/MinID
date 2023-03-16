@@ -21,6 +21,7 @@ totalLength = np.sum(lengths)
 # %% concatenate data and split into arrays
 
 data_full = pd.concat([data.parse(sheet) for sheet in names], ignore_index=True)
+data_full = np.nan_to_num(data_full)
 labels = np.array([])
 
 for i,j in zip(names,lengths):
@@ -50,7 +51,7 @@ X_train, X_test, y_train, y_test = train_test_split(data_full, y, test_size=0.2)
 train_dataset = tf.data.Dataset.from_tensor_slices((X_train, y_train))
 test_dataset = tf.data.Dataset.from_tensor_slices((X_test, y_test))
 
-# %% create model
+# %% Make NN model
 
 
 model = keras.Sequential(
@@ -62,17 +63,20 @@ model = keras.Sequential(
     ]
 )
 
-
-# %% compile model
-
 batch_size = 64
 epochs = 10
 model.compile(
     loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True)
-    , optimizer=tf.keras.optimizers.Adam(learning_rate=0.001)
+    , optimizer=tf.keras.optimizers.Adam(learning_rate=0.0001)
     , metrics=["accuracy"])
 
 model.fit(X_train, y_train, batch_size=batch_size, epochs=epochs, validation_split=0.1)
+
+#%% Make DGTree model 
+
+#%% make naive Bayes model
+
+#%% make KNN model 
 
 
 #%% evaluate model
