@@ -30,7 +30,7 @@ for i,j in zip(names,lengths):
 #convert the strings to integers for model training
 
 y, label = pd.factorize(labels)
-y_bool = tf.keras.utils.to_categorical(y, num_classes=None)
+#y = tf.keras.utils.to_categorical(y, num_classes=None)
 
 '''
 Now we have all the data stacked in a single array, 'data_full', and the labels in a single array, 'labels'.
@@ -43,7 +43,7 @@ layer = layers.Normalization()
 layer.adapt(data_full)
 normalized_data = layer(data_full)
 
-X_train, X_test, y_train, y_test = train_test_split(data_full, y_bool, test_size=0.2)
+X_train, X_test, y_train, y_test = train_test_split(data_full, y, test_size=0.2)
 
 
 
@@ -58,17 +58,18 @@ model = keras.Sequential(
         layers.Dense(256, activation="relu", name="layer1"),
         layers.Dense(256, activation="relu", name="layer2"),
         layers.Dense(128, activation="relu", name="layer3"),
-        tf.keras.layers.Dense(59, name="output")
+        layers.Dense(59, activation = 'softmax', name="output")
     ]
 )
 
 
 # %% compile model
 model.compile(
-    optimizer=keras.optimizers.RMSprop(learning_rate=1e-3),
-    loss=keras.losses.SparseCategoricalCrossentropy(),
-    metrics=[keras.metrics.SparseCategoricalAccuracy()],
-)
+    loss = 'categorical_crossentropy'
+    , optimizer = 'adam'
+    , metrics = ['accuracy']
+    )
+
 
 #%% train model
 
@@ -76,9 +77,9 @@ history = model.fit(X_train, y_train, epochs=10, batch_size=32, verbose=2)
 
 #%% evaluate model
 
-# test_scores = model.evaluate(X_test, y_test, verbose=2)
-# print("Test loss:", test_scores[0])
-# print("Test accuracy:", test_scores[1])
+test_scores = model.evaluate(X_test, y_test, verbose=2)
+print("Test loss:", test_scores[0])
+print("Test accuracy:", test_scores[1])
 
 predictions = model.predict(X_test)
 
