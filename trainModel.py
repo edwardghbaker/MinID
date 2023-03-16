@@ -27,6 +27,10 @@ for i,j in zip(names,lengths):
     x = np.full(j,i)
     labels = np.append(labels,x)
 
+#convert the strings to integers for model training
+
+y, label = pd.factorize(labels)
+
 '''
 Now we have all the data stacked in a single array, 'data_full', and the labels in a single array, 'labels'.
 
@@ -38,7 +42,9 @@ layer = layers.Normalization()
 layer.adapt(data_full)
 normalized_data = layer(data_full)
 
-X_train, X_test, y_train, y_test = train_test_split(data_full, labels, test_size=0.2)
+X_train, X_test, y_train, y_test = train_test_split(data_full, y, test_size=0.2)
+
+
 
 train_dataset = tf.data.Dataset.from_tensor_slices((X_train, y_train))
 test_dataset = tf.data.Dataset.from_tensor_slices((X_test, y_test))
@@ -48,9 +54,10 @@ test_dataset = tf.data.Dataset.from_tensor_slices((X_test, y_test))
 
 model = keras.Sequential(
     [
-        layers.Dense(64, activation="relu", name="layer1"),
-        layers.Dense(64, activation="relu", name="layer2"),
-        layers.Dense(64),
+        layers.Dense(256, activation="relu", name="layer1"),
+        layers.Dense(256, activation="relu", name="layer2"),
+        layers.Dense(128, activation="relu", name="layer3"),
+        tf.keras.layers.Dense(59, activation='sigmoid')
     ]
 )
 
@@ -62,6 +69,6 @@ model.compile(
     metrics=[keras.metrics.SparseCategoricalAccuracy()],
 )
 
-history = model.fit(train_dataset, epochs=10, batch_size=32, verbose=2)
+history = model.fit(X_train, y_train, epochs=10, batch_size=32, verbose=2)
 
 #%% evaluate model
