@@ -4,6 +4,7 @@ import tensorflow as tf
 from tensorflow.keras import layers
 from tensorflow import keras
 from sklearn.model_selection import train_test_split
+import xgboost as xgb
 
 import numpy as np
 import scipy as scipy 
@@ -77,6 +78,8 @@ model.fit(X_train, y_train, batch_size=batch_size, epochs=epochs, validation_spl
 #%% make naive Bayes model
 
 #%% make KNN model 
+
+#%% make xgb model
 
 
 #%% evaluate model
