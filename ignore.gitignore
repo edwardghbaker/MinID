@@ -1,2 +1,7 @@
-LEPR.xlsx
-test.xlsx
+
+# Excel files 
+*.xlsx
+
+#VS code files 
+.vscode
+
