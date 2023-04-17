@@ -12,9 +12,9 @@ import pandas as pd
 
 #%% import data
 
-data = pd.ExcelFile(r"C:\Users\User\Documents\GitHub\MinID\LEPR.xlsx")
+data = pd.ExcelFile("TrainModel\LEPR.xlsx")
 names = data.sheet_names[1:] # remove experimental sheet 
-test2 = pd.ExcelFile(r"C:\Users\User\Documents\GitHub\MinID\test.xlsx")
+test2 = pd.ExcelFile("TrainModel\test.xlsx")
 
 lengths = [len(data.parse(i)) for i in names]
 totalLength = np.sum(lengths)
