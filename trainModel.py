@@ -73,11 +73,11 @@ NN_model.compile(
 
 NN_model.fit(X_train, y_train, batch_size=batch_size, epochs=epochs, validation_split=0.1)
 
-#%% Make DGTree model 
-
 #%% make naive Bayes model
 
 #%% make KNN model 
+
+
 
 #%% make xgb model
 
