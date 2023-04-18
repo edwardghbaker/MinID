@@ -16,12 +16,18 @@ data = pd.ExcelFile("TrainingData\\LEPR.xlsx")
 names = data.sheet_names[1:] # remove experimental sheet 
 test2 = pd.ExcelFile("TrainingData\\test.xlsx")
 
-lengths = [len(data.parse(i)) for i in names]
-totalLength = np.sum(lengths)
+lengths = [len(data.parse(i).drop(columns=['Index']).dropna(axis = 0, how = 'all')) for i in names]
+for i,j in zip(names,lengths):
+    if j < 10:
+        names.remove(i)
+        lengths.remove(j)
 
+totalLength = np.sum(lengths)
+print(totalLength)
+print(len(names))
 # %% concatenate data and split into arrays
 
-data_full = pd.concat([data.parse(sheet) for sheet in names], ignore_index=True)
+data_full = pd.concat([data.parse(i).drop(columns=['Index']).dropna(axis = 0, how = 'all') for i in names], ignore_index=True)
 data_full = np.nan_to_num(data_full)
 labels = np.array([])
 
@@ -47,20 +53,17 @@ normalized_data = layer(data_full)
 
 X_train, X_test, y_train, y_test = train_test_split(data_full, y, test_size=0.2)
 
-
-
 train_dataset = tf.data.Dataset.from_tensor_slices((X_train, y_train))
 test_dataset = tf.data.Dataset.from_tensor_slices((X_test, y_test))
 
 # %% Make NN model
 
-
 NN_model = keras.Sequential(
     [
-        layers.Dense(256, activation="relu", name="Input"),
+        layers.Dense(256, activation="relu", name="layer1"),
         layers.Dense(256, activation="relu", name="layer2"),
         layers.Dense(128, activation="relu", name="layer3"),
-        layers.Dense(59, activation="softmax", name="Output")
+        layers.Dense(len(names), activation="softmax", name="Output")
     ]
 )
 
@@ -75,6 +78,8 @@ NN_model.fit(X_train, y_train, batch_size=batch_size, epochs=epochs, validation_
 
 #%% make naive Bayes model
 
+
+
 #%% make KNN model 
 
 
@@ -85,7 +90,7 @@ xgb_model = xgb.XGBClassifier(objective="multi:softmax", num_class=59)
 xgb_model.fit(X_train, y_train)
 xgb_model.save_model("xgb_model.json")
 
-#%% evaluate model
+#%% Evaluate models
 
 test_scores = NN_model.evaluate(X_test, y_test, verbose=2)
 print("Test loss:", test_scores[0])
