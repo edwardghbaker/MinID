@@ -12,9 +12,9 @@ import pandas as pd
 
 #%% import data
 
-data = pd.ExcelFile("TrainModel\LEPR.xlsx")
+data = pd.ExcelFile("TrainingData\\LEPR.xlsx")
 names = data.sheet_names[1:] # remove experimental sheet 
-test2 = pd.ExcelFile("TrainModel\test.xlsx")
+test2 = pd.ExcelFile("TrainingData\\test.xlsx")
 
 lengths = [len(data.parse(i)) for i in names]
 totalLength = np.sum(lengths)
@@ -55,7 +55,7 @@ test_dataset = tf.data.Dataset.from_tensor_slices((X_test, y_test))
 # %% Make NN model
 
 
-model = keras.Sequential(
+NN_model = keras.Sequential(
     [
         layers.Dense(256, activation="relu", name="layer1"),
         layers.Dense(256, activation="relu", name="layer2"),
@@ -66,12 +66,12 @@ model = keras.Sequential(
 
 batch_size = 64
 epochs = 10
-model.compile(
+NN_model.compile(
     loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True)
     , optimizer=tf.keras.optimizers.Adam(learning_rate=0.0001)
     , metrics=["accuracy"])
 
-model.fit(X_train, y_train, batch_size=batch_size, epochs=epochs, validation_split=0.1)
+NN_model.fit(X_train, y_train, batch_size=batch_size, epochs=epochs, validation_split=0.1)
 
 #%% Make DGTree model 
 
@@ -81,10 +81,13 @@ model.fit(X_train, y_train, batch_size=batch_size, epochs=epochs, validation_spl
 
 #%% make xgb model
 
+xgb_model = xgb.XGBClassifier(objective="multi:softmax", num_class=59)
+xgb_model.fit(X_train, y_train)
+xgb_model.save_model("xgb_model.json")
 
 #%% evaluate model
 
-test_scores = model.evaluate(X_test, y_test, verbose=2)
+test_scores = NN_model.evaluate(X_test, y_test, verbose=2)
 print("Test loss:", test_scores[0])
 print("Test accuracy:", test_scores[1])
 

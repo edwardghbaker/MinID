@@ -3,5 +3,9 @@
 *.xlsx
 
 #VS code files 
-.vscode
+*.vscode
+
+trainedModels
+*.json
+
 
