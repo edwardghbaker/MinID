@@ -1,8 +1,8 @@
 #%% import libraries
 
 import tensorflow as tf 
-from tensorflow.keras import layers
 from tensorflow import keras
+from keras import layers
 from sklearn.model_selection import train_test_split
 import xgboost as xgb
 
@@ -57,10 +57,10 @@ test_dataset = tf.data.Dataset.from_tensor_slices((X_test, y_test))
 
 NN_model = keras.Sequential(
     [
-        layers.Dense(256, activation="relu", name="layer1"),
+        layers.Dense(256, activation="relu", name="Input"),
         layers.Dense(256, activation="relu", name="layer2"),
         layers.Dense(128, activation="relu", name="layer3"),
-        layers.Dense(59)
+        layers.Dense(59, activation="softmax", name="Output")
     ]
 )
 
