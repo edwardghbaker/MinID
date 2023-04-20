@@ -4,11 +4,14 @@ import tensorflow as tf
 from tensorflow import keras
 from keras import layers
 from sklearn.model_selection import train_test_split
+from sklearn.naive_bayes import CategoricalNB
+from sklearn.neighbors import KNeighborsClassifier
 import xgboost as xgb
 
 import numpy as np
 import scipy as scipy 
 import pandas as pd
+from joblib import dump, load
 
 #%% import data
 
@@ -18,13 +21,13 @@ test2 = pd.ExcelFile("TrainingData\\test.xlsx")
 
 lengths = [len(data.parse(i).drop(columns=['Index']).dropna(axis = 0, how = 'all')) for i in names]
 for i,j in zip(names,lengths):
-    if j < 10:
+    if j < 100:
         names.remove(i)
         lengths.remove(j)
 
 totalLength = np.sum(lengths)
-print(totalLength)
-print(len(names))
+# print(totalLength)
+# print(len(names))
 # %% concatenate data and split into arrays
 
 data_full = pd.concat([data.parse(i).drop(columns=['Index']).dropna(axis = 0, how = 'all') for i in names], ignore_index=True)
@@ -40,10 +43,7 @@ for i,j in zip(names,lengths):
 y, label = pd.factorize(labels)
 #y = tf.keras.utils.to_categorical(y, num_classes=None)
 
-'''
-Now we have all the data stacked in a single array, 'data_full', and the labels in a single array, 'labels'.
-
-'''
+'''Now we have all the data stacked in a single array, 'data_full', and the labels in a single array, 'labels'.'''
 
 # %% preprocess then split data into training and testing
 
@@ -58,7 +58,7 @@ test_dataset = tf.data.Dataset.from_tensor_slices((X_test, y_test))
 
 # %% Make NN model
 
-NN_model = keras.Sequential(
+nn_model = keras.Sequential(
     [
         layers.Dense(256, activation="relu", name="layer1"),
         layers.Dense(256, activation="relu", name="layer2"),
@@ -69,33 +69,27 @@ NN_model = keras.Sequential(
 
 batch_size = 64
 epochs = 10
-NN_model.compile(
+nn_model.compile(
     loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True)
-    , optimizer=tf.keras.optimizers.Adam(learning_rate=0.0001)
+    , optimizer=tf.keras.optimizers.Adam(learning_rate=0.01)
     , metrics=["accuracy"])
 
-NN_model.fit(X_train, y_train, batch_size=batch_size, epochs=epochs, validation_split=0.1)
+nn_model.fit(X_train, y_train, batch_size=batch_size, epochs=epochs, validation_split=0.1)
 
+nn_model.save("nn_model.h5")
+#%% make xgb model
+
+xgb_model = xgb.XGBClassifier(objective="multi:softmax", num_class=len(names))
+xgb_model.fit(X_train, y_train)
+xgb_model.save_model("xgb_model.json")
 #%% make naive Bayes model
 
-
+cnb_model = CategoricalNB()
+cnb_model.fit(X_train, y_train)
+dump(cnb_model, 'cnb_model.joblib')
 
 #%% make KNN model 
 
-
-
-#%% make xgb model
-
-xgb_model = xgb.XGBClassifier(objective="multi:softmax", num_class=59)
-xgb_model.fit(X_train, y_train)
-xgb_model.save_model("xgb_model.json")
-
-#%% Evaluate models
-
-test_scores = NN_model.evaluate(X_test, y_test, verbose=2)
-print("Test loss:", test_scores[0])
-print("Test accuracy:", test_scores[1])
-
-predictions = model.predict(X_test)
-
-# %%
+knn_model = KNeighborsClassifier(n_neighbors=len(names))
+knn_model.fit(X_train,y_train)
+dump(knn_model, 'knn_model.joblib')
