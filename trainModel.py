@@ -26,8 +26,7 @@ for i,j in zip(names,lengths):
         lengths.remove(j)
 
 totalLength = np.sum(lengths)
-# print(totalLength)
-# print(len(names))
+
 # %% concatenate data and split into arrays
 
 data_full = pd.concat([data.parse(i).drop(columns=['Index']).dropna(axis = 0, how = 'all') for i in names], ignore_index=True)
@@ -76,20 +75,20 @@ nn_model.compile(
 
 nn_model.fit(X_train, y_train, batch_size=batch_size, epochs=epochs, validation_split=0.1)
 
-nn_model.save("nn_model.h5")
+nn_model.save("Models\\nn_model.h5")
 #%% make xgb model
 
 xgb_model = xgb.XGBClassifier(objective="multi:softmax", num_class=len(names))
 xgb_model.fit(X_train, y_train)
-xgb_model.save_model("xgb_model.json")
+xgb_model.save_model("Models\\xgb_model.json")
 #%% make naive Bayes model
 
 cnb_model = CategoricalNB()
 cnb_model.fit(X_train, y_train)
-dump(cnb_model, 'cnb_model.joblib')
+dump(cnb_model, 'Models\\cnb_model.joblib')
 
 #%% make KNN model 
 
 knn_model = KNeighborsClassifier(n_neighbors=len(names))
 knn_model.fit(X_train,y_train)
-dump(knn_model, 'knn_model.joblib')
+dump(knn_model, 'Models\\knn_model.joblib')
