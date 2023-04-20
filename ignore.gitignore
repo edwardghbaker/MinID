@@ -7,5 +7,7 @@
 
 trainedModels
 *.json
+*.joblib
+*.h5
 
 
