@@ -19,7 +19,6 @@ nn_model = tf.keras.models.load_model("Models\\nn_model.h5")
 
 
 
-
 #%% Evaluate models
 test_scores = nn_model.evaluate(X_test, y_test, verbose=2)
 print("Test loss:", test_scores[0])
